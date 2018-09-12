@@ -1,0 +1,404 @@
+/*
+ *******************************************
+ * px转rem函数
+ * 参数默认字体大小16，无单位
+ * 以750的设计稿为准，750对应的rem是28px;
+ * 以375的设计稿为准，375对应的rem是14px;
+ * demo: font-size: px-rem(14);
+ *******************************************
+ */
+
+@function px-rem($px: 28, $baseFontSize: 28) {
+  @return $px / $baseFontSize * 1rem;
+}
+
+
+
+
+
+
+/*
+ *******************************************
+ * 处理单位函数
+ * 判断在移动端时将px单位转成rem单位
+ * 参数无单位时，默认加上px单位，有单位时使用自带单位
+ * demo: font-size: deal-unit(14);
+ *******************************************
+ */
+
+@function deal-unit($value) {
+  $valueWithUnit: if($value!=auto and unitless($value), #{$value}px, $value);
+  @return if(var(--isPhone)==true and unitless($value), px-rem($value), $valueWithUnit);
+}
+
+
+
+
+/*
+ *******************************************
+ * 多个值自适应函数，为margin padding这类属性多个值设计
+ * 参数传入一组数字，在移动端将px转换为rem单位，auto则不转换
+ * demo: margin: value(10 20 auto 8);
+ *******************************************
+ */
+
+@function value($values) {
+  $result: null;
+  @each $value in $values {
+    $result: append($result, deal-unit($value), space);
+  }
+  @return $result;
+}
+
+
+
+
+
+
+
+
+
+/*
+ *******************************************
+ * 多个键值自适应函数，仅限值为数值类（处理属性值只有一个的情况）
+ * 参数传入一组list，在移动端将px转换为rem单位，auto则不转换
+ * demo: @include list(width 100%, height 300);
+ *******************************************
+ */
+
+@mixin list($list...) {
+  @each $obj in $list {
+    $key: nth($obj, 1);
+    $value: nth($obj, 2);
+    #{$key}: deal-unit($value);
+  }
+}
+
+
+
+/*
+ *******************************************
+ * 多个键值自适应函数，仅限值为数值类（处理属性值有多个的情况）
+ * 参数传入一组map，在移动端将px转换为rem单位，auto则不转换
+ * demo: @include map((margin: 0 20 10 auto, padding: 5 10));
+ *******************************************
+ */
+
+@mixin map($map) {
+  @each $key,
+  $value in $map {
+    #{$key}: if(length($value) > 1, value($value), deal-unit($value));
+  }
+}
+
+
+
+/*******************************************
+ * 定位
+ * 参数传入元素定位类型和相应的属性值
+ * demo: @include position(fixed, top 0, left 0);
+ *******************************************
+ */
+
+@mixin position($type, $list...) {
+  position: $type;
+  @include list($list...);
+}
+
+
+
+/*******************************************
+ * 颜色
+ * 参数传入背景色，前景色，边框颜色(或者边框所有属性)
+ * demo: @include color(blue, white, #ccc);
+ *******************************************
+ */
+
+@mixin color($bgColor: #fff, $fontColor: #000, $border: 0) {
+  background: $bgColor;
+  color: $fontColor;
+  @if $border !=0 {
+    @if length($border)>1 {
+      $borderWidth: if(nth($border, 1) > 1, deal-unit(nth($border, 1)), #{nth($border, 1)}px);
+      border: $borderWidth nth($border, 2) nth($border, 3);
+    }
+    @else {
+      border: 1px solid #{$border};
+    }
+  }
+}
+
+
+
+
+
+
+/*******************************************
+ * flex布局
+ * 参数依次为换行，水平对齐，垂直对齐，多轴线垂直对齐
+ * demo: @include flex(wrap, space-around);
+ *******************************************
+ */
+
+@mixin flex($direction: row, $wrap: nowrap, $hAlign: flex-start, $vAlign: stretch, $multiVAlign: stretch) {
+  display: flex;
+  justify-content: $hAlign;
+  flex-flow: $direction $wrap;
+  align-items: $vAlign;
+  align-content: $multiVAlign;
+}
+
+.flex {
+  @include flex();
+}
+
+
+
+
+/*
+ *******************************************
+ * 块状元素水平垂直居中
+ * demo: @include center-block()
+ *******************************************
+ */
+
+@mixin center-block($isTextFlow: true, $position: absolute) {
+  @if not($isTextFlow) {
+    position: $position;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  @else {
+    margin: 0 auto;
+  }
+}
+
+
+
+
+
+
+/*
+ *******************************************
+ * 块状元素文本水平垂直居中
+ * demo: @include center-text()
+ *******************************************
+ */
+
+@mixin center-text($height: 50, $align: center, $hasChild: false) {
+  text-align: $align;
+  height: deal-unit($height);
+  line-height: deal-unit($height);
+  @if $hasChild {
+    * {
+      vertical-align: middle;
+    }
+  }
+}
+
+
+
+
+
+
+
+/*
+ *******************************************
+ * 块状元素文本垂直居中
+ * demo: @include line-height()
+ *******************************************
+ */
+
+@mixin line-height($height: 50) {
+  height: deal-unit($height);
+  line-height: deal-unit($height);
+}
+
+
+
+
+
+/*
+ *******************************************
+ * ellipsis 文本超出元素宽度显示...
+ * demo: @include ellipsis()
+ *******************************************
+ */
+
+@mixin ellipsis($lineNum: 1, $textNum: 0) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  @if $lineNum==1 {
+    display: block;
+    white-space: nowrap;
+    @if $textNum>0 {
+      max-width: #{$textNum}em;
+    }
+  }
+  @else {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lineNum;
+  }
+}
+
+
+
+
+
+
+/*
+ *******************************************
+ * triangle 三角形css定义
+ * demo: @include triangle()
+ *******************************************
+ */
+
+@mixin triangle($direction: bottom, $size: 5, $borderColor: #ccc) {
+  width: 0;
+  height: 0;
+  content: '';
+  display: inline-block;
+  border: deal-unit($size) solid transparent;
+  border-#{$direction}-color: $borderColor;
+}
+
+
+
+
+
+/*
+ *******************************************
+ * arrow 箭头css定义
+ * demo: @include arrow()
+ *******************************************
+ */
+
+@mixin arrow($direction: right, $size: 10, $borderWidth: 2, $borderColor: #555) {
+  @include list(width $size, height $size);
+  display: inline-block;
+  @if $direction==top {
+    border-top: deal-unit($borderWidth) solid $borderColor;
+    border-right: deal-unit($borderWidth) solid $borderColor;
+    transform: rotate(-45deg);
+  }
+  @else if $direction==right {
+    border-top: deal-unit($borderWidth) solid $borderColor;
+    border-right: deal-unit($borderWidth) solid $borderColor;
+    transform: rotate(45deg);
+  }
+  @else if $direction==bottom {
+    border-left: deal-unit($borderWidth) solid $borderColor;
+    border-bottom: deal-unit($borderWidth) solid $borderColor;
+    transform: rotate(-45deg);
+  }
+  @else if $direction==left {
+    border-left: deal-unit($borderWidth) solid $borderColor;
+    border-bottom: deal-unit($borderWidth) solid $borderColor;
+    transform: rotate(45deg);
+  }
+}
+
+
+
+
+
+
+/*
+ *******************************************
+ * fontsize 字体大小生成器
+ * demo: <div class="c-fz-12"><div>
+ *******************************************
+ */
+
+//------- 默认定义从12px到32px间隔2px的字体大小样式 ----------
+$fontSizeClass: 2 12 32 !default;
+//------------------------------------------------------
+@mixin font-size() {
+  $fontSizeGap: nth($fontSizeClass, 1); // 字体间隔数
+  $fontSize: nth($fontSizeClass, 2); // 字体起始值
+  $fontSizeEnd: nth($fontSizeClass, 3); // 字体结束值
+  @while $fontSize <=$fontSizeEnd {
+    .c-fz-#{$fontSize} {
+      font-size: deal-unit($fontSize);
+    }
+    $fontSize: $fontSize+$fontSizeGap;
+  }
+}
+
+@include font-size();
+
+
+
+
+
+
+
+/*
+ *******************************************
+ * margin padding 内外边距生成器
+ * demo: <div class="c-ml-10 c-pr-15"><div>
+ *******************************************
+ */
+
+//----------- 默认定义从5px到20px间隔5px的边距样式 ----------
+$marginClass: 5 5 20 !default;
+//------------------------------------------------------
+@mixin margin() {
+  $marginGap: nth($marginClass, 1); // 边距间隔数
+  $marginValue: nth($marginClass, 2); // 边距起始值
+  $marginEnd: nth($marginClass, 3); // 边距结束值
+  $marginDirection: (l left) (r right) (t top) (b bottom);
+  $marginPrototype: (m margin) (p padding);
+
+  @while $marginValue <=$marginEnd {
+
+    @each $type in $marginPrototype {
+      $typeName: nth($type, 1);
+      $typePro: nth($type, 2);
+
+      .c-#{$typeName}-#{$marginValue} {
+        #{$typePro}: deal-unit($marginValue);
+      }
+
+      @each $direction in $marginDirection {
+        $dirName: nth($direction, 1);
+        $dirPro: nth($direction, 2);
+
+        .c-#{$typeName}#{$dirName}-#{$marginValue} {
+          #{$typePro}-#{$dirPro}: deal-unit($marginValue);
+        }
+      }
+    }
+    $marginValue: $marginValue+$marginGap;
+  }
+}
+
+@include margin();
+
+
+
+
+
+
+/*
+ *******************************************
+ * clearfix 清除浮动
+ * demo: @include clearfix()
+ *******************************************
+ */
+
+@mixin clearfix() {
+  .clearfix {
+    zoom: 1;
+    &:after {
+      clear: both;
+      display: block;
+      height: 0;
+      content: '';
+    }
+  }
+}
+
+@include clearfix();

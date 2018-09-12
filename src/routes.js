@@ -1,0 +1,43 @@
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from "@/modules/Home"
+
+Vue.use(Router)
+
+export default new Router({
+  routes: [
+    // 首页
+    {
+      path: '/',
+      component: Home,
+      children: [{
+        path: 'index',
+        name: 'index',
+        component: require("@/modules/index")
+      }]
+    },
+    // 系统设置
+    {
+      path: '/system',
+      component: Home,
+      children: [{
+        path: 'app',
+        name: 'system-app',
+        component: require("@/modules/system/app")
+      }, {
+        path: 'module',
+        name: 'system-module',
+        component: require("@/modules/system/module")
+      }, {
+        path: 'module-detail/:id',
+        name: 'system-module-detail',
+        component: require("@/modules/system/module_detail")
+      }]
+    },
+    {
+      path: '*',
+      redirect: '/index'
+    },
+
+  ]
+})

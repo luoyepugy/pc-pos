@@ -1,0 +1,54 @@
+.ivu-breadcrumb {
+  @include line-height(50);
+}
+
+.ivu-page {
+  margin-top: 15px;
+  float: right;
+}
+
+.ivu-dropdown-item {
+  &:hover {
+    color: $primary;
+  }
+}
+
+
+// tree-table带展开功能的
+.tree-table td.ivu-table-expanded-cell {
+  padding: 0;
+}
+
+.tree-table-expand.ivu-table-wrapper {
+  margin-bottom: -1px;
+  border: 0;
+}
+
+.tree-table {
+  border-top: 1px solid #e8eaec;
+}
+
+.tree-table .cell {
+  border-bottom: 1px solid #e8eaec;
+}
+
+.tree-table-border .cell {
+  border-right: 1px solid #e8eaec;
+}
+
+.tree-table .row .cell-wrapper {
+  @include center-text(38);
+}
+
+.tree-table .header>div {
+  padding: 0 17px;
+}
+
+.tree-table .header-border {
+  border-right: 0 !important;
+  border-left: 0 !important;
+}
+
+.tree-table .s-tree-arrow {
+  width: 25px !important;
+}

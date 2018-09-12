@@ -1,0 +1,151 @@
+
+/*
+ *******************************************
+ * 布局1，顶部固定（fixed），左侧宽度固定（纵向超出滚动），中间主体（横向纵向滚动）
+ * +-------------------+
+ * |                   |
+ * +--+----------------+
+ * |  |                |
+ * |  |                |
+ * |  |                |
+ * |  |                |
+ * |  |                |
+ * +--+----------------+
+ * pc端常用布局
+ * demo: <div class="l-pc"></div>
+ *******************************************
+ */
+
+ .l-pc {
+    .head {
+        @include list(width 100%);
+        @include position(fixed, top 0, left 0);
+        @include color(yellow, #333);
+    }
+    .side {
+        @include color(#ccc, #333);
+        @include list(width 250, height 100%, padding 20);
+        float: left;
+    }
+    .content {
+        @include color(#fff, #333);
+        @include map((margin: 20 20 20 270));
+    }
+    .body {
+        @include color(#ddd, #333);
+        @include position(absolute, top 50, left 0, right 0, bottom 0);
+    }
+ }
+
+
+
+/*
+ *******************************************
+ * 布局2，顶部固定（fixed），中间主体（横向纵向滚动），底部自动
+ * +-------------------+
+ * |                   |
+ * +-------------------+
+ * |                   |
+ * |                   |
+ * |                   |
+ * |                   |
+ * +-------------------+
+ * |                   |
+ * +-------------------+
+ * pc端常用布局
+ * demo: <div class="l-pc2"></div>
+ *******************************************
+ */
+
+ .l-pc2 {
+    .head {
+        @include list(width 100%);
+        @include position(fixed, top 0, left 0);
+        @include color(yellow, #333);
+    }
+    .body {
+        @include color(#ddd, #333);
+        @include list(padding 20, margin-top 50);
+        overflow-x: hidden;
+    }
+    .foot {
+        @include list(padding 20);
+        @include color(orange, #fff, 3 dashed black);
+    }
+ }
+
+
+
+
+ /*
+ *******************************************
+ * 布局3，顶部固定（fixed），左右侧宽度固定，中间主体和左右侧一起随页面滚动
+ * +-------------------+
+ * |                   |
+ * +--+-------------+--+
+ * |  |             |  |
+ * |  |             |  |
+ * |  |             |  |
+ * |  |             |  |
+ * |  |             |  |
+ * +--+-------------+--+
+ * pc端常用布局
+ * demo: <div class="l-pc3"></div>
+ *******************************************
+ */
+
+ .l-pc3 {
+    .head {
+        @include list(width 100%);
+        @include position(fixed, top 0, left 0);
+        @include color(yellow, #333);
+    }
+    .side-left,
+    .side-right {
+        flex: 0 0 deal-unit(250);
+        @include color(#ccc, #333);
+        @include list(padding 20);
+    }
+    .content {
+        @include list(padding 20);
+        @include color(#fff, #333);
+    }
+    .body {
+        @include color(#ddd, #333);
+        @include list(padding 20, margin-top 50);
+        @include flex(nowrap, space-between);
+        overflow-x: hidden;
+    }
+ }
+
+
+
+
+
+/*
+ *******************************************
+ * 布局4，顶部固定（fixed），中间主体（纵向滚动），底部固定
+ * +-------------------+
+ * |                   |
+ * +-------------------+
+ * |                   |
+ * |                   |
+ * |                   |
+ * |                   |
+ * +-------------------+
+ * |                   |
+ * +-------------------+
+ * 移动端常用布局
+ * demo: <div class="l-phone"></div>
+ *******************************************
+ */
+
+ .l-phone {
+    @include flex(column);
+    @include position(absolute, top 0, left 0, right 0, bottom 0);
+    .content {
+        flex: auto;
+        @include color(#ddd, #333, #000);
+        overflow-x: hidden;
+    }
+ }

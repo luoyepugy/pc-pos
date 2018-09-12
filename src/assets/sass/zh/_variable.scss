@@ -1,0 +1,75 @@
+@charset "UTF-8";
+
+// ****************** 全局变量 *************************
+//-------- 是否为移动端 ------------
+:root {
+  --isPhone: false;
+}
+
+//-------- 字体原子生成器 ------------
+$fontSizeClass: 2 12 32;
+//-------- 边距原子生成器 ------------
+$marginClass: 5 5 20;
+
+//-----------------------------------------------------
+// setting scss: 后面加//s代表已使用
+//-----------------------------------------------------
+// font相关
+//-----------------------------------------------------
+$baseFontSize: 15px !default;
+$baseLineHeight: 1.5 !default;
+$baseFontFamily: "微软雅黑",
+"PingFangSC-Regular",
+Helvetica,
+STHeiTi,
+Arial,
+sans-serif !default;
+// body设置
+//-----------------------------------------------------
+$bgColor: #f5f5f5 !default;
+$textColor: #333 !default;
+$borderColor: #e4e4e4 !default;
+// 元素上下间距
+//-----------------------------------------------------
+$baseGap: 30px;
+// header,footer等的高度
+//-----------------------------------------------------
+$phoneStatusBar: 40px;
+$topHeight: 88px;
+$bottomNavHeight: 104px;
+//----------------------color------------------------
+// 灰色调
+$black: black !default;
+$grayDarker: #333 !default;
+$grayDark: #666 !default;
+$gray: #999 !default;
+$grayLight: #ccc !default;
+$white: white !default;
+
+// 主色调-绿色
+$primaryDark: #0B6286 !default;
+$primary: #009688 !default;
+$primaryLight: #00aba0 !default;
+//辅色调-绿色
+$info: #30CDA0 !default;
+// link
+$linkColor: #333 blue !default; // 链接颜色
+// placeholder
+//-----------------------------------------------------
+// 变量分别为：是否输出表单的占位符placeholder样式，文本色
+$placeholder: true $grayLight !default;
+// radius
+//-----------------------------------------------------
+$radiusBase: 10px !default;
+// z-index
+//-----------------------------------------------------
+$zIndexAllCover: 10000 !default;
+//$zIndexHeader: 400 !default;
+$zIndexBottom: 400 !default;
+$zIndexContent: 500 !default;
+$zIndexOverlay: 980 !default; // 默认高于header和footer部分
+$zIndexConfirm: 1000 !default; //弹出框
+$zIndexToast: 1000 !default; //提示消息
+$zIndexLoading: 10000;
+$zIndexSure: 980 !default;
+//-----------------------------------------------------

@@ -1,0 +1,29 @@
+
+    .icon-back {
+        background: url(../imgs/sprite.png) no-repeat;
+        background-position: 0px 0px;
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+    }
+    .icon-camera {
+        background: url(../imgs/sprite.png) no-repeat;
+        background-position: 0px -40px;
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+    }
+    .icon-board {
+        background: url(../imgs/sprite.png) no-repeat;
+        background-position: 0px -80px;
+        width: 70px;
+        height: 70px;
+        display: inline-block;
+    }
+    .icon-chat {
+        background: url(../imgs/sprite.png) no-repeat;
+        background-position: 0px -150px;
+        width: 86px;
+        height: 86px;
+        display: inline-block;
+    }

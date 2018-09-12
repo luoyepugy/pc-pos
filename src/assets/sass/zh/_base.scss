@@ -1,0 +1,27 @@
+
+//--------------- font-size生成器的变量 --------------------------
+$fontSizeClass: 4 14 32; // 默认定义从12px到32px间隔2px的字体大小样式
+//------------------ margin padding生成器的变量 ------------------
+$marginClass: 5 5 20; // 默认定义从5px到20px间隔5px的边距样式
+//--------------------------------------------------------------
+
+.arrow-left {
+    @include arrow(left);
+}
+
+// 元素水平、垂直居中
+.c-hv-c {
+  @include center-block(false);
+}
+// 元素水平居中
+.c-h-c {
+  @include center-block();
+}
+// 自定义三角形
+.c-triangle-left {
+  @include triangle(left, 10, #ccc);
+}
+// 文本溢出
+.c-ellipsis {
+  @include ellipsis();
+}
