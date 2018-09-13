@@ -70,7 +70,7 @@
     </Modal>
     <!-- /删除模态框 -->
     <!-- 选择显示字段 -->
-    <table-column-filter @change="tableFilterChange" :fields="table.fields"></table-column-filter>
+    <table-column-filter @change="table.columns=arguments[0]" :fields="table.fields"></table-column-filter>
     <!-- /选择显示字段 -->
   </div>
 </template>
@@ -98,6 +98,7 @@ export default {
           isShow: false,
           columns: this.getTableColumns(),
           default: [
+            { name: 'checkbox', disabled: true, checked: true, id: 1 },
             { name: '模块编号', disabled: true, checked: true },
             { name: '系统名称', disabled: false, checked: true },
             { name: '名称', disabled: false, checked: true },
@@ -110,7 +111,7 @@ export default {
             { name: '创建人', disabled: false, checked: true },
             { name: '更新时间', disabled: false, checked: true },
             { name: '更新人', disabled: false, checked: true },
-            { name: 'operate', disabled: true, checked: true }
+            { name: 'operate', disabled: true, checked: true, id: 1 }
           ],
         },
         loading: true,
@@ -160,6 +161,11 @@ export default {
   methods: {
     getTableColumns() {
       const columns = {
+        'checkbox': {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
         '模块编号': {
           title: '模块编号',
           key: 'moduleNo',
@@ -305,9 +311,10 @@ export default {
                     switch (name) {
                       case 'edit':
                         this.modal.add = true;
+                        this.$refs['form'].resetFields();
                         this.modal.addTitle = '编辑模块';
                         this.modal.isEdit = true;
-                        this.form = params.row;
+                        this.form = Object.assign({}, params.row);
                         break;
                       case 'detail':
                         this.$root.go({ name: 'system-module-detail', params: { id: params.row.moduleNo } });
@@ -586,14 +593,6 @@ export default {
       //     render: (h, params) => { // return h('div', [ // h('Button', { // props: { // type: 'default', // size: 'small' // }, // style: { // marginRight: '5px' // }, // on: { // click: () => { // this.modal.add = true; // this.modal.addTitle = '编辑模块'; // this.modal.isEdit = true; // this.form = params.row; // } // } // }, '编辑'), // h('Button', { // props: { // type: 'default', // size: 'small' // }, // style: { // marginRight: '5px' // }, // on: { // click: () => { // this.$root.go({ name: 'system-module-detail' }); // } // } // }, '详情'), // h('Button', { // props: { // type: 'error', // size: 'small' // }, // on: { // click: () => { // this.modal.del = true; // } // } // }, '删除') // ]); // } // } // ]
 
     },
-    tableFilterChange(datas) {
-      let checked = [{
-        type: 'selection',
-        width: 60,
-        align: 'center'
-      }];
-      this.table.columns = checked.concat(datas);
-    },
     addModal() {
       this.modal.add = true;
       this.modal.addTitle = '新增模块';
@@ -610,6 +609,7 @@ export default {
     },
     cancelForm() {
       this.modal.add = false;
+      this.$refs['form'].resetFields();
     },
     saveDelete() {
       this.selectionClose();
