@@ -15,8 +15,8 @@ Vue.use(iView);
 /* eslint-disable no-new */
 const RootAppConstructor = Vue.extend(App)
 new RootAppConstructor({
-  el: '#app',
-  router,
-  store,
-  components: { components }
+    el: '#app',
+    router,
+    store,
+    components: { components }
 })

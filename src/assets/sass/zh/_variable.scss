@@ -3,7 +3,7 @@
 // ****************** 全局变量 *************************
 //-------- 是否为移动端 ------------
 :root {
-  --isPhone: false;
+    --isPhone: false;
 }
 
 //-------- 字体原子生成器 ------------
@@ -53,7 +53,7 @@ $primaryLight: #00aba0 !default;
 //辅色调-绿色
 $info: #30CDA0 !default;
 // link
-$linkColor: #333 blue !default; // 链接颜色
+$linkColor: #515a6e $primary !default; // 链接颜色
 // placeholder
 //-----------------------------------------------------
 // 变量分别为：是否输出表单的占位符placeholder样式，文本色

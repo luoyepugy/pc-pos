@@ -24,7 +24,11 @@ import json from '@/json/demo1.json';
 export default {
   data() {
     return {
-      crumbList: ['系统设置', '应用管理'],
+      crumbList: [{
+        name: '系统设置',
+      }, {
+        name: '应用管理'
+      }],
       statusList: consts.SYSTEM_STATUS_ALL,
       status: 2,
       table: {
@@ -79,10 +83,7 @@ export default {
     }
   }
 }
-
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-
-
 </style>

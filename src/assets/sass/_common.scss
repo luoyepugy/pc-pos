@@ -44,6 +44,22 @@
 
 .content-table {
   margin: 0 10px 10px;
+  position: relative;
+  .icon-filter-column {
+    @include position(absolute, right 18, top 10);
+    z-index: 2;
+  }
+  .icon-ellipsis {
+    width: 40px;
+    @include position(relative, right 8);
+  }
+  .icon-ellipsis,
+  .icon-filter-column {
+    cursor: pointer;
+    &:hover {
+      color: $primary;
+    }
+  }
 }
 
 .cp-table-full {

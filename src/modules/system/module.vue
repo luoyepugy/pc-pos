@@ -13,7 +13,7 @@
         <div class="button-group">
           <Button class="button">导出</Button>
           <Button type="primary" class="button" @click="addModal">新增</Button>
-          <Button @click="table.fields.isShow=true" icon="ios-options-outline"></Button>
+          <!-- <Button @click="table.fields.isShow=true" icon="ios-options-outline"></Button> -->
         </div>
       </div>
       <div class="content-tools" v-show="tools.show">
@@ -22,6 +22,7 @@
         <span class="button" @click="modal.del=true"><Icon type="ios-trash-outline" size="22" />删除</span>
       </div>
       <div class="content-table">
+        <span @click="table.fields.isShow=true" class="icon-filter-column"><Icon type="ios-options-outline" size="24"></Icon></span>
         <Table class="cp-table-full" ref="table" @on-selection-change="selectionChange" :loading="table.loading" :columns="table.columns" :data="table.data"></Table>
         <Page :total="json.total" show-sizer show-total show-elevator />
       </div>
@@ -82,7 +83,11 @@ import json from '@/json/demo2.json';
 export default {
   data() {
     return {
-      crumbList: ['系统设置', '模块管理'],
+      crumbList: [{
+        name: '系统设置',
+      }, {
+        name: '模块管理',
+      }],
       statusList: consts.SYSTEM_STATUS_ALL,
       status: 2,
       nameList: consts.SYSTEM_NAME_ALL,
@@ -105,7 +110,7 @@ export default {
             { name: '创建人', disabled: false, checked: true },
             { name: '更新时间', disabled: false, checked: true },
             { name: '更新人', disabled: false, checked: true },
-            { name: '操作', disabled: true, checked: true }
+            { name: 'operate', disabled: true, checked: true }
           ],
         },
         loading: true,
@@ -234,57 +239,140 @@ export default {
           key: 'updateUser',
           width: 100
         },
-        '操作': {
-          title: '操作',
+        'operate': {
+          title: ' ',
           key: 'action',
-          width: 200,
+          width: 60,
           fixed: 'right',
           align: 'center',
+
+          // render: (h, params) => {
+          //   return h('div', [
+          //     h('Button', {
+          //       props: {
+          //         type: 'default',
+          //         size: 'small'
+          //       },
+          //       style: {
+          //         marginRight: '5px'
+          //       },
+          //       on: {
+          //         click: () => {
+          //           this.modal.add = true;
+          //           this.modal.addTitle = '编辑模块';
+          //           this.modal.isEdit = true;
+          //           this.form = params.row;
+          //         }
+          //       }
+          //     }, '编辑'),
+          //     h('Button', {
+          //       props: {
+          //         type: 'default',
+          //         size: 'small'
+          //       },
+          //       style: {
+          //         marginRight: '5px'
+          //       },
+          //       on: {
+          //         click: () => {
+          //           this.$root.go({ name: 'system-module-detail', params: { id: params.row.moduleNo } });
+          //         }
+          //       }
+          //     }, '详情'),
+          //     h('Button', {
+          //       props: {
+          //         type: 'error',
+          //         size: 'small'
+          //       },
+          //       on: {
+          //         click: () => {
+          //           this.modal.del = true;
+          //         }
+          //       }
+          //     }, '删除')
+          //   ]);
+          // }
+
           render: (h, params) => {
             return h('div', [
-              h('Button', {
+              h('Dropdown', {
                 props: {
-                  type: 'default',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
+                  transfer: true,
+                  placement: 'bottom-end'
                 },
                 on: {
-                  click: () => {
-                    this.modal.add = true;
-                    this.modal.addTitle = '编辑模块';
-                    this.modal.isEdit = true;
-                    this.form = params.row;
+                  'on-click': (name) => {
+                    switch (name) {
+                      case 'edit':
+                        this.modal.add = true;
+                        this.modal.addTitle = '编辑模块';
+                        this.modal.isEdit = true;
+                        this.form = params.row;
+                        break;
+                      case 'detail':
+                        this.$root.go({ name: 'system-module-detail', params: { id: params.row.moduleNo } });
+                        break;
+                      case 'delete':
+                        this.modal.del = true;
+                        break;
+                    }
                   }
                 }
-              }, '编辑'),
-              h('Button', {
-                props: {
-                  type: 'default',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.$root.go({ name: 'system-module-detail', params: { id: params.row.moduleNo } });
+              }, [
+                h('div', {
+                  class: {
+                    'icon-ellipsis': true
                   }
-                }
-              }, '详情'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.modal.del = true;
-                  }
-                }
-              }, '删除')
-            ]);
+                }, [
+                  h('Icon', {
+                    props: {
+                      type: 'ios-more',
+                      size: '24'
+                    }
+                  })
+                ]),
+                h('DropdownMenu', {
+                  slot: 'list'
+                }, [
+                  h('DropdownItem', {
+                    props: {
+                      name: 'edit'
+                    }
+                  }, [h('Icon', {
+                      props: {
+                        type: 'ios-create-outline',
+                        size: '24'
+                      }
+                    }),
+                    '编辑'
+                  ]),
+                  h('DropdownItem', {
+                    props: {
+                      name: 'detail'
+                    }
+                  }, [h('Icon', {
+                      props: {
+                        type: 'ios-document-outline',
+                        size: '24'
+                      }
+                    }),
+                    '详情'
+                  ]),
+                  h('DropdownItem', {
+                    props: {
+                      name: 'delete'
+                    }
+                  }, [h('Icon', {
+                      props: {
+                        type: 'ios-trash-outline',
+                        size: '24'
+                      }
+                    }),
+                    '删除'
+                  ]),
+                ])
+              ])
+            ])
           }
         }
       };
@@ -549,10 +637,7 @@ export default {
     this.getTableColumns();
   }
 }
-
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-
-
 </style>
