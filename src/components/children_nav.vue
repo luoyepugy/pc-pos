@@ -52,12 +52,11 @@ export default {
       if (this.isMulti) return list.length * 180 + 'px';
     },
     go(name) {
-      this.$root.go({ name: name });
+      this.$router.push({ name: name });
       this.isShow = false;
     }
   }
 }
-
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
@@ -117,5 +116,4 @@ export default {
     }
   }
 }
-
 </style>

@@ -7,10 +7,9 @@
   float: right;
 }
 
-.ivu-dropdown-item {
-  &:hover {
-    color: $primary;
-  }
+.ivu-dropdown-item-selected,
+.ivu-dropdown-item.ivu-dropdown-item-selected:hover {
+  background: #f3f3f3;
 }
 
 

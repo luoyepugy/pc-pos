@@ -13,15 +13,15 @@
     <div class="menu">
       <ul>
         <li @mouseover="show.base=true" @mouseout="show.base=false">主数据
-          <children-nav :is-left-nav="false" :multi="true" :show="show.base" :list="childMenu.base"></children-nav>
+          <ChildrenNav :is-left-nav="false" :multi="true" :show="show.base" :list="childMenu.base"></ChildrenNav>
         </li>
         <li @mouseover="show.user=true" @mouseout="show.user=false">
           <Icon type="ios-person-outline" size="24" />用户名
-          <children-nav :is-left-nav="false" :multi="false" :show="show.user" :list="childMenu.user"></children-nav>
+          <ChildrenNav :is-left-nav="false" :multi="false" :show="show.user" :list="childMenu.user"></ChildrenNav>
         </li>
         <li @mouseover="show.setting=true" @mouseout="show.setting=false">
           <Icon type="ios-settings-outline" size="24" />
-          <children-nav :is-left-nav="false" :multi="false" :show="show.setting" :list="childMenu.setting"></children-nav>
+          <ChildrenNav :is-left-nav="false" :multi="false" :show="show.setting" :list="childMenu.setting"></ChildrenNav>
         </li>
         <li>
           <Badge :count="3" overflow-count="99">
@@ -61,7 +61,7 @@ export default {
           },
           {
             name: '角色权限',
-            route: 'system-module',
+            route: 'system-role',
             icon: 'ios-document-outline'
           },
           {
@@ -220,12 +220,11 @@ export default {
     })
   }
 }
-
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .cp-head-nav {
-  @include list(width 100%, height 50);
+  @include list(width 100%, height 50, font-size 14);
   @include color(#fff, #333);
   border-bottom: 1px solid #e4e4e4;
   .ios-menu {
@@ -277,5 +276,4 @@ export default {
     }
   }
 }
-
 </style>

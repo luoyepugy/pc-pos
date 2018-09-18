@@ -1,6 +1,6 @@
 <template>
-  <div class="view-system-app">
-    <crumb :list="crumbList"></crumb>
+  <div>
+    <Crumb :list="crumbList"></Crumb>
     <div class="content">
       <div class="content-filter">
         <Select v-model="status" style="width:200px">
@@ -10,7 +10,7 @@
       </div>
       <div class="content-table">
         <Table class="cp-table-full" :loading="table.loading" :columns="table.columns" :data="table.data"></Table>
-        <Page :total="json.total" show-sizer show-total show-elevator />
+        <Page @on-change="pageChange" @on-page-size-change="pageSizeChange" :total="json.total" show-sizer show-total show-elevator />
       </div>
     </div>
   </div>
@@ -63,6 +63,8 @@ export default {
         data: [],
         json: {},
       },
+      page: 1,
+      pageSize: 10,
     }
   },
   created() {
@@ -70,6 +72,14 @@ export default {
     this.json = json;
   },
   methods: {
+    pageChange(page) {
+      this.page = page;
+      console.log(page);
+    },
+    pageSizeChange(size) {
+      this.pageSize = size;
+      console.log(size);
+    },
     getTableDatas() {
       // $.getJSON(, res => {
       // Rest.get('json/demo1.json').done(res => {

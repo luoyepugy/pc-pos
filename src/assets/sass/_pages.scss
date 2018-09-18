@@ -1,1 +1,15 @@
-
+.view-system-role {
+  .table {
+    margin-top: 15px;
+    width: 100%;
+    table-layout: auto;
+    td {
+      border-right: 1px solid #ddd;
+      padding: 0 10px;
+      height: 35px;
+    }
+    tr td:last-child {
+      border-right: 0;
+    }
+  }
+}

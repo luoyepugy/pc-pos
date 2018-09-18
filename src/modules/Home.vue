@@ -2,10 +2,10 @@
   <div id="wrapper" class="wrapper">
     <div class="container">
       <!-- 顶部菜单START -->
-      <header-nav></header-nav>
+      <HeaderNav></HeaderNav>
       <!-- 顶部菜单END -->
       <!-- 左边菜单START -->
-      <left-nav></left-nav>
+      <LeftNav></LeftNav>
       <!-- 左边菜单END -->
       <!-- router view -->
       <keep-alive>
@@ -29,7 +29,6 @@ export default {
 
   }
 }
-
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
@@ -38,5 +37,4 @@ export default {
     padding-left: 70px;
   }
 }
-
 </style>

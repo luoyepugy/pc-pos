@@ -25,6 +25,10 @@ export default new Router({
         name: 'system-app',
         component: require("@/modules/system/app")
       }, {
+        path: 'role',
+        name: 'system-role',
+        component: require("@/modules/system/role")
+      }, {
         path: 'module',
         name: 'system-module',
         component: require("@/modules/system/module")

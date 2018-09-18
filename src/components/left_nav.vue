@@ -4,7 +4,7 @@
       <li v-for="item in list" @mouseover="show[item.id]=true" @mouseout="show[item.id]=false">
         <Icon :type="item.icon" size="24" />
         <span v-show="isOpen==true">{{item.name}}<Icon type="ios-arrow-forward" size="22" /></span>
-        <children-nav :width="item.childMenu" :multi="true" :show="show[item.id]" :list="childMenu[item.id]"></children-nav>
+        <ChildrenNav :width="item.childMenu" :multi="true" :show="show[item.id]" :list="childMenu[item.id]"></ChildrenNav>
       </li>
     </ul>
   </div>
@@ -107,12 +107,11 @@ export default {
 
   }
 }
-
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .cp-left-nav {
-  @include list(width 180, height 100vh);
+  @include list(width 180, height 100vh, font-size 14);
   @include color(#293038, #959FA9);
   @include position(absolute, left 0);
   &.only-icon {
@@ -136,5 +135,4 @@ export default {
     }
   }
 }
-
 </style>

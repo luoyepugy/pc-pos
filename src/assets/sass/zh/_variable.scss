@@ -3,7 +3,7 @@
 // ****************** 全局变量 *************************
 //-------- 是否为移动端 ------------
 :root {
-    --isPhone: false;
+  --isPhone: false;
 }
 
 //-------- 字体原子生成器 ------------
@@ -16,7 +16,7 @@ $marginClass: 5 5 20;
 //-----------------------------------------------------
 // font相关
 //-----------------------------------------------------
-$baseFontSize: 15px !default;
+$baseFontSize: 12px !default;
 $baseLineHeight: 1.5 !default;
 $baseFontFamily: "微软雅黑",
 "PingFangSC-Regular",

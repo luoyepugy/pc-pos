@@ -1,6 +1,6 @@
 <template>
-  <div class="view-system-module">
-    <crumb :list="crumbList"></crumb>
+  <div>
+    <Crumb :list="crumbList"></Crumb>
     <div class="content">
       <div class="content-filter" v-show="!tools.show">
         <Select v-model="status" style="width:200px">
@@ -22,9 +22,9 @@
         <span class="button" @click="modal.del=true"><Icon type="ios-trash-outline" size="22" />删除</span>
       </div>
       <div class="content-table">
-        <span @click="table.fields.isShow=true" class="icon-filter-column"><Icon type="ios-options-outline" size="24"></Icon></span>
+        <span @click="table.fields.isShow=true" class="cp-color-hover icon-filter-column"><Icon type="ios-options-outline" size="24"></Icon></span>
         <Table class="cp-table-full" ref="table" @on-selection-change="selectionChange" :loading="table.loading" :columns="table.columns" :data="table.data"></Table>
-        <Page :total="json.total" show-sizer show-total show-elevator />
+        <Page @on-change="pageChange" @on-page-size-change="pageSizeChange" :total="json.total" show-sizer show-total show-elevator />
       </div>
     </div>
     <!-- 新增/编辑模态框 -->
@@ -50,7 +50,7 @@
           </Select>
         </FormItem>
         <FormItem label="操作权限" prop="operations">
-          <Select multiple v-model="form.operations" placeholder="请选择...">
+          <Select multiple filterable v-model="form.operations" placeholder="请选择...">
             <Option v-for="item in operationList" :value="item.Id" :key="item.Id">{{ item.name }}</Option>
           </Select>
         </FormItem>
@@ -70,7 +70,7 @@
     </Modal>
     <!-- /删除模态框 -->
     <!-- 选择显示字段 -->
-    <table-column-filter @change="table.columns=arguments[0]" :fields="table.fields"></table-column-filter>
+    <TableColumnFilter @change="table.columns=arguments[0]" :fields="table.fields"></TableColumnFilter>
     <!-- /选择显示字段 -->
   </div>
 </template>
@@ -152,6 +152,8 @@ export default {
       systemList: consts.SYSTEM_NAME,
       form_statusList: consts.SYSTEM_STATUS,
       operationList: consts.MENU_PERMISSION,
+      page: 1,
+      pageSize: 10,
     }
   },
   created() {
@@ -248,7 +250,7 @@ export default {
         'operate': {
           title: ' ',
           key: 'action',
-          width: 60,
+          width: 50,
           fixed: 'right',
           align: 'center',
 
@@ -314,7 +316,7 @@ export default {
                         this.$refs['form'].resetFields();
                         this.modal.addTitle = '编辑模块';
                         this.modal.isEdit = true;
-                        this.form = Object.assign({}, params.row);
+                        Object.assign(this.form, params.row);
                         break;
                       case 'detail':
                         this.$root.go({ name: 'system-module-detail', params: { id: params.row.moduleNo } });
@@ -328,7 +330,8 @@ export default {
               }, [
                 h('div', {
                   class: {
-                    'icon-ellipsis': true
+                    'icon-ellipsis': true,
+                    'cp-color-hover': true
                   }
                 }, [
                   h('Icon', {
@@ -348,7 +351,7 @@ export default {
                   }, [h('Icon', {
                       props: {
                         type: 'ios-create-outline',
-                        size: '24'
+                        size: '20'
                       }
                     }),
                     '编辑'
@@ -360,7 +363,7 @@ export default {
                   }, [h('Icon', {
                       props: {
                         type: 'ios-document-outline',
-                        size: '24'
+                        size: '20'
                       }
                     }),
                     '详情'
@@ -372,7 +375,7 @@ export default {
                   }, [h('Icon', {
                       props: {
                         type: 'ios-trash-outline',
-                        size: '24'
+                        size: '20'
                       }
                     }),
                     '删除'
@@ -592,6 +595,14 @@ export default {
 
       //     render: (h, params) => { // return h('div', [ // h('Button', { // props: { // type: 'default', // size: 'small' // }, // style: { // marginRight: '5px' // }, // on: { // click: () => { // this.modal.add = true; // this.modal.addTitle = '编辑模块'; // this.modal.isEdit = true; // this.form = params.row; // } // } // }, '编辑'), // h('Button', { // props: { // type: 'default', // size: 'small' // }, // style: { // marginRight: '5px' // }, // on: { // click: () => { // this.$root.go({ name: 'system-module-detail' }); // } // } // }, '详情'), // h('Button', { // props: { // type: 'error', // size: 'small' // }, // on: { // click: () => { // this.modal.del = true; // } // } // }, '删除') // ]); // } // } // ]
 
+    },
+    pageChange(page) {
+      this.page = page;
+      console.log(page);
+    },
+    pageSizeChange(size) {
+      this.pageSize = size;
+      console.log(size);
     },
     addModal() {
       this.modal.add = true;

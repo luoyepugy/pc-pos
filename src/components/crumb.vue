@@ -1,6 +1,6 @@
 <template>
   <!-- 开始 -->
-  <div class="view-breadcrumb">
+  <div class="cp-breadcrumb">
     <Breadcrumb>
       <BreadcrumbItem to="/index">首页</BreadcrumbItem>
       <BreadcrumbItem v-for="(item,index) in list" :key="item.name" :to="item.path">{{item.name}}</BreadcrumbItem>
@@ -29,8 +29,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.view-breadcrumb {
+.cp-breadcrumb {
   position: relative;
+  font-size: 14px;
   .icons {
     @include position(absolute, top 15, right 0);
     cursor: pointer;
