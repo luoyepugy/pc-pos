@@ -51,7 +51,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': configServer.dev.env,
       '__COMMONAPI__': configServer.dev.apiCommonUrl[switchApi],
-      '__LOGINHOSTURL__': configServer.build.loginHostUrl[switchApi],
+      '__SYSTEMAPI__': configServer.dev.apiSystemUrl[switchApi],
     }),
     new ExtractTextPlugin("style.css"),
     new SpritesmithPlugin({

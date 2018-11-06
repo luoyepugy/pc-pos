@@ -2,24 +2,24 @@
   <div>
     <Crumb :list="crumbList"></Crumb>
     <div class="content">
-      <div class="content-filter">
-        <Select v-model="status" style="width:200px">
-          <Option v-for="item in statusList" :value="item.Id" :key="item.Id">{{ item.name }}</Option>
-        </Select>
-        <Input search placeholder="请输入系统编号/系统代码/系统名称" />
-      </div>
-      <div class="content-table">
-        <Table class="cp-table-full" :loading="table.loading" :columns="table.columns" :data="table.data"></Table>
-        <Page @on-change="pageChange" @on-page-size-change="pageSizeChange" :total="json.total" show-sizer show-total show-elevator />
-      </div>
-    </div>
+  <div class="content-filter">
+    <Select v-model="status" style="width:200px">
+      <Option v-for="item in statusList" :value="item.Id" :key="item.Id">{{ item.name }}</Option>
+    </Select>
+    <Input search placeholder="请输入系统编号/系统代码/系统名称" />
+  </div>
+  <div class="content-table">
+    <Table class="cp-table-full" :loading="table.loading" :columns="table.columns" :data="table.data"></Table>
+    <Page @on-change="pageChange" @on-page-size-change="pageSizeChange" :total="page.total" show-sizer show-total show-elevator />
+  </div>
+</div>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import consts from '@/utils/consts';
 import Rest from '@/rest';
-import Helper from '@/helper';
-import json from '@/json/demo1.json';
+import api from '@/api';
+import { helper } from '@/helper';
 
 export default {
   data() {
@@ -52,7 +52,7 @@ export default {
             title: '系统状态',
             key: 'status',
             render: (h, params) => {
-              return h('span', Helper.fieldMapping(params.row.status, consts.SYSTEM_STATUS));
+              return h('span', helper.fieldMapping(params.row.status, consts.SYSTEM_STATUS));
             }
           },
           {
@@ -61,35 +61,36 @@ export default {
           }
         ],
         data: [],
-        json: {},
       },
-      page: 1,
-      pageSize: 10,
+      page: {
+        total: 0,
+        size: 10,
+        index: 1,
+      },
     }
   },
   created() {
     this.getTableDatas();
-    this.json = json;
   },
   methods: {
     pageChange(page) {
-      this.page = page;
+      this.page.index = page;
       console.log(page);
     },
     pageSizeChange(size) {
-      this.pageSize = size;
+      this.page.size = size;
       console.log(size);
     },
     getTableDatas() {
-      // $.getJSON(, res => {
-      // Rest.get('json/demo1.json').done(res => {
-      // if (Helper.isSuccess(res)) {
-      this.table.data = json.rows;
-      this.table.loading = false;
-      // } else {
-      //   this.$Message.error(res.status.msg);
-      // }
-      // });
+      Rest.get(api.system.app.list).done(res => {
+        if (helper.isSuccess(res)) {
+          this.table.data = res.rows;
+          this.page.total = res.total;
+          this.table.loading = false;
+        } else {
+          this.$Message.error(res.status.msg);
+        }
+      });
     }
   }
 }

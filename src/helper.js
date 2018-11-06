@@ -1,4 +1,4 @@
-const helper = {
+export const helper = {
 
   /* 判断 obj 是否为 null
        Usage:
@@ -120,5 +120,11 @@ function getCookie(name) {
   return ''
 }
 
-
-export default helper
+/**
+ * 图表echarts统一依赖，避免多次打包
+ * @param key
+ * @return {*}
+ */
+export const echarts = function(resolve) {
+  require(['echarts/lib/echarts', 'echarts/lib/chart/bar', 'echarts/chart/pie', 'echarts/lib/chart/line', 'echarts/lib/component/tooltip', 'echarts/lib/component/legend', 'echarts/lib/component/title'], resolve);
+};

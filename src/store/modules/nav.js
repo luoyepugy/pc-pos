@@ -3,7 +3,9 @@ const state = {
 }
 
 const getters = {
-  getNavStatus: state => state.isOpen
+  getNavStatus: (state) => {
+    return state.isOpen;
+  }
 }
 
 const mutations = {

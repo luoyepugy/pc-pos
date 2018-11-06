@@ -12,7 +12,7 @@ export default {
     return {
       visible: false,
       text: this.list[0].name,
-      selectedId: this.list[0].id,
+      selectedId: this.list[0].Id,
     }
   },
   props: {

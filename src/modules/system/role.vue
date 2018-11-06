@@ -4,9 +4,9 @@
     <div class="content content-scroll">
       <Row>
         <Col span="6" style="padding-right:10px">
-        <Select :label-in-value="true" @on-change="changeRole" v-model="role" filterable>
+        <Select @on-change="changeRole" :label-in-value="true" v-model="role" filterable>
           <Option v-for="item in roleList" :value="item.Id" :key="item.Id">{{ item.name }}</Option>
-          <Option class="ivu-select-item-selected ivu-select-item-focus" value="0" @click.prevent.native="editRole(false)">
+          <Option class="ivu-select-item-selected ivu-select-item-focus" :value="0" @click.prevent.native="editRole(false)">
             <Icon type="ios-add" size="22" />添加角色</Option>
         </Select>
         </Col>
@@ -25,58 +25,24 @@
         </Col>
       </Row>
       <p class="c-color-gray c-mt-15">说明： 修改角色权限后，所有赋予此角色的员工账号对应权限均将修改；</p>
-      <div class="ivu-table">
-        <table class="table">
-          <tbody class="ivu-table-tbody">
-            <tr class="ivu-table-row">
-              <td rowspan="8">主数据</td>
-              <td rowspan="4">组织架构</td>
-              <td>行政区域</td>
-              <td>
-                <Checkbox v-model="single">查看</Checkbox>
-              </td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td>地区管理</td>
-              <td>
-                <Checkbox v-model="single">查看</Checkbox>
-              </td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td>组织机构管理</td>
-              <td>
-                <Checkbox v-model="single">查看</Checkbox>
-              </td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td>片区管理</td>
-              <td>
-                <Checkbox v-model="single">查看</Checkbox>
-                <Checkbox v-model="single">新增</Checkbox>
-                <Checkbox v-model="single">编辑</Checkbox>
-                <Checkbox v-model="single">删除</Checkbox>
-                <Checkbox v-model="single">导出</Checkbox>
-              </td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td rowspan="4">组织架构</td>
-              <td>行政区域</td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td>地区管理</td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td>组织机构管理</td>
-            </tr>
-            <tr class="ivu-table-row">
-              <td>片区管理</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- <div class="ivu-table">
+  <table class="table">
+    <tbody class="ivu-table-tbody">
+      <tr v-for="item in roleDatas" class="ivu-table-row">
+        <td v-for="child in item" :rowspan="child.row || 1" :colspan="child.col || 1">
+          <span v-if="!child.list">{{child.name}}</span>
+          <Checkbox v-for="ck in child.list" v-model="checkedList[ck.id]">{{ck.name}}</Checkbox>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> -->
+    </div>
+    <div class="content-footer">
+      <Button type="primary" class="c-button" @click="save">保存</Button>
     </div>
     <!-- 添加、修改角色弹窗 -->
-    <Modal v-model="modal.show" :title="modal.title" @on-ok="saveRoleName">
+    <Modal :mask-closable="false" v-model="modal.show" :title="modal.title" @on-ok="saveRoleName">
       <Form ref="form" :model="form" :rules="ruleValidate" :label-width="100">
         <FormItem label="角色名称" prop="name">
           <Input v-model="form.name" placeholder="请输入角色名称"></Input>
@@ -89,7 +55,8 @@
 <script type="text/ecmascript-6">
 import consts from '@/utils/consts';
 import Rest from '@/rest';
-import Helper from '@/helper';
+import api from '@/api';
+import { helper } from '@/helper';
 
 export default {
   data() {
@@ -125,24 +92,57 @@ export default {
           { required: true, message: '请输入角色名称', trigger: 'blur' }
         ],
       },
-      single: false
+      roleDatas: [],
+      checkedList: {},
+      curRole: {},
+      isEdit: true,
     }
   },
   created() {
-
+    this.getRoleDatas();
   },
   methods: {
+    getRoleDatas() {
+      var that = this;
+      Rest.get(api.system.role.list).done(res => {
+        if (helper.isSuccess(res)) {
+          this.roleDatas = res.rows;
+          res.rows.forEach(v => {
+            v.forEach(i => {
+              if (i.list && i.list.length > 0) {
+                i.list.forEach(j => {
+                  this.checkedList[j.id] = j.checked;
+                });
+              }
+            });
+          });
+        } else {
+          this.$Message.error(res.status.msg);
+        }
+      });
+    },
+    save() {
+      console.log(this.checkedList);
+    },
     saveRoleName() {
-
+      if (this.isEdit) {
+        this.roleList.filter(v => this.curRole.value == v.Id)[0].name = this.form.name;
+      } else {
+        this.roleList.push({
+          name: this.form.name
+        });
+      }
     },
     changeRole(item) {
       this.form.name = (item.value == 0) ? '' : item.label;
-      this.role = (item.value == 0) ? this.role : item.value;
+      console.log(item.value);
+      this.role = (item.value == 0) ? 1 : item.value;
+      this.curRole = item;
     },
     editRole(flag) {
       this.modal.title = flag ? '修改角色名称' : '添加角色';
       this.modal.show = true;
-      this.saveRoleName();
+      this.isEdit = flag;
     }
   }
 }

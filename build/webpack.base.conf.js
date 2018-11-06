@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const glob = require("glob");
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -13,19 +14,24 @@ function resolve(dir) {
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    vendor: './src/vendor/index.js',
   },
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production' ?
-      config.build.assetsPublicPath : config.dev.assetsPublicPath
+      config.build.assetsPublicPath : config.dev.assetsPublicPath,
+    // library: 'libs', // 指定类库名,主要用于直接引用的方式(比如使用script 标签)
+    // libraryExport: "default", // 对外暴露default属性，就可以直接调用default里的属性
+    libraryTarget: 'umd' // 定义打包方式Universal Module Definition,同时支持在CommonJS、AMD和全局变量使用
   },
   resolve: {
     extensions: ['.js', '.vue', '.json', '.scss', '.less'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      echarts: "echarts/lib",
     }
   },
   module: {

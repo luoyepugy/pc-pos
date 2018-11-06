@@ -6,7 +6,13 @@ module.exports = {
     env: { NODE_ENV: '"development"' },
     // 公共服务接口
     apiCommonUrl: {
-      dev: '"http://172.17.234.171:8080/"',
+      dev: '"http://172.17.234.212:8081/"',
+      test: '"http://172.18.84.243:6060/portal/"',
+      uat: '"http://121.196.212.221:6060/portal/"',
+      production: '"http://39.108.178.182:6060/portal/"',
+    },
+    apiSystemUrl: {
+      dev: '"http://172.17.234.212:8082/"',
       test: '"http://172.18.84.243:6060/portal/"',
       uat: '"http://121.196.212.221:6060/portal/"',
       production: '"http://39.108.178.182:6060/portal/"',
@@ -29,23 +35,22 @@ module.exports = {
     // 默认情况下，关闭 CSS Sourcemaps，因为使用相对路径会报错。
     // CSS-Loader README：https://github.com/webpack/css-loader#sourcemaps
     cssSourceMap: false,
-    // 案场管家主域名地址
-    loginHostUrl: {
-      dev: '"http://localhost:8080"',
-      test: '"http://172.18.84.243"',
-      uat: '"http://121.43.184.192"',
-      production: '"http://cloud.tospur.com"'
-    }
   },
   build: {
     // 构建环境
     env: { NODE_ENV: '"production"' },
     // 公共服务接口
     apiCommonUrl: {
-      dev: '"http://172.18.84.208:8080/lxy-cloud/"',
+      dev: '"http://172.17.234.212:8081/"',
       test: '"http://172.18.84.243:6060/portal/"',
       uat: '"http://121.196.212.221:6060/portal/"',
       production: '"http://39.108.178.182:6060/portal/"'
+    },
+    apiSystemUrl: {
+      dev: '"http://172.17.234.212:8081/"',
+      test: '"http://172.18.84.243:6060/portal/"',
+      uat: '"http://121.196.212.221:6060/portal/"',
+      production: '"http://39.108.178.182:6060/portal/"',
     },
     // 构建输出的index.html文件
     index: path.resolve(__dirname, '../dist/index.html'),
@@ -72,12 +77,5 @@ module.exports = {
     // 运行“build”命令行时，加上一个参数，可以在构建完成后参看包分析报告
     // true为开启，false为关闭
     bundleAnalyzerReport: process.env.npm_config_report,
-    // 案场管家主域名地址
-    loginHostUrl: {
-      dev: '"http://172.18.84.243"',
-      test: '"http://172.18.84.243"',
-      uat: '"http://121.43.184.192"',
-      production: '"http://cloud.tospur.com"'
-    }
   }
 }

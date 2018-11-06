@@ -1,5 +1,8 @@
-<template>
-  <div class="cp-head-nav">
+import { mapMutations, mapState } from 'vuex';
+import ChildrenNav from './child_nav.js';
+
+export default {
+  template: `<div class="cp-head-nav">
     <div class="logo" :class="[isOpen ? '': 'mini']">
       <p v-show="isOpen">TOPSPORTS</p>
       <p v-show="isOpen">滔搏运动城</p>
@@ -30,12 +33,7 @@
         </li>
       </ul>
     </div>
-  </div>
-</template>
-<script type="text/ecmascript-6">
-import { mapMutations, mapState } from 'vuex'
-
-export default {
+  </div>`,
   data() {
     return {
       show: {
@@ -206,8 +204,11 @@ export default {
             }
           ]
         }],
-      }
+      },
     }
+  },
+  components: {
+    ChildrenNav,
   },
   computed: mapState({
     // 箭头函数可使代码更简练
@@ -219,71 +220,4 @@ export default {
       toggle: 'toggleNavStatus'
     })
   }
-}
-</script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-.cp-head-nav {
-  @include list(width 100%, height 50, font-size 14);
-  @include color(#fff, #333);
-  border-bottom: 1px solid #e4e4e4;
-
-  .ios-menu {
-    padding: 0 13px;
-    margin-right: 15px;
-    @include line-height(48);
-    cursor: pointer;
-    display: inline-block;
-
-    &:hover {
-      @include color($bgColor, $textColor);
-    }
-  }
-
-  .logo {
-    @include list(width 180, height 50, font-size 16);
-    text-align: center;
-    display: inline-block;
-    @include color(#002140, #fff);
-
-    &.mini {
-      @include list(width 50, height 50);
-
-      p:last-child {
-        width: 30px;
-        margin: 0 auto;
-      }
-    }
-  }
-
-  .title {
-    @include list(font-size 16, width 200);
-    @include line-height(50);
-    display: inline-block;
-    vertical-align: top;
-  }
-
-  .menu {
-    float: right;
-    @include list(padding-right 10);
-    @include line-height(49);
-    color: $grayDark;
-
-    &>ul>li {
-      display: inline-block;
-      padding: 0 10px;
-      cursor: pointer;
-      position: relative;
-
-      &:hover {
-        @include color($bgColor, $textColor);
-      }
-    }
-
-    .ivu-badge-count {
-      top: 7px;
-      right: 2px;
-    }
-  }
-}
-</style>
+};

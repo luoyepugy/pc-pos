@@ -1,5 +1,9 @@
-<template>
-  <div id="wrapper" class="wrapper">
+import { mapState } from 'vuex'
+import HeaderNav from './head_nav';
+import LeftNav from './left_nav';
+
+export default {
+  template: `<div id="wrapper" class="wrapper">
     <div class="container">
       <!-- 顶部菜单START -->
       <HeaderNav></HeaderNav>
@@ -12,14 +16,13 @@
         <router-view class="view" :class="[isOpen ? '' : 'pl70']"></router-view>
       </keep-alive>
     </div>
-  </div>
-</template>
-<script type="text/ecmascript-6">
-import { mapState } from 'vuex'
-
-export default {
+  </div>`,
   data() {
     return {}
+  },
+  components: {
+    HeaderNav,
+    LeftNav,
   },
   computed: mapState({
     // 箭头函数可使代码更简练
@@ -27,14 +30,5 @@ export default {
   }),
   methods: {
 
-  }
-}
-</script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-.view {
-  &.pl70 {
-    padding-left: 70px;
-  }
-}
-</style>
+  },
+};

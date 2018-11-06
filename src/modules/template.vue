@@ -1,6 +1,6 @@
 <template>
   <div class="view-system-app">
-    <crumb :list="crumbList"></crumb>
+    <Crumb :list="crumbList"></Crumb>
     <div class="content">
     </div>
   </div>

@@ -21,9 +21,9 @@
     });
 */
 import Vue from 'vue'
-import Helper from './helper'
+import { helper } from './helper'
 import $ from 'jquery'
-import App from './main'
+// import App from './main'
 // import Message from './components/iview/message'
 
 function Rest() {}
@@ -78,9 +78,9 @@ Rest.prototype = {
 */
 function parse(path, params) {
   if (path.charAt(path.length - 1) === '/') path = path.substr(0, path.length - 1)
-  if (Helper.isString(params)) return path + '/' + params
-  if (Helper.isNumber(params)) return path + '/' + params
-  if (Helper.isObject(params)) {
+  if (helper.isString(params)) return path + '/' + params
+  if (helper.isNumber(params)) return path + '/' + params
+  if (helper.isObject(params)) {
     if (/:[a-zA-Z]+/.test(path)) {
       for (var key in params) {
         path = path.replace(new RegExp(':' + key, 'g'), params[key])
@@ -121,16 +121,26 @@ function uploadHelper(path, data) {
 }
 
 function downloadHelper(path, data, callback) {
-  var baseUrl = __COMMONAPI__
-  var fullUrl = baseUrl + path
+  var fullUrl = getFullUrl(path)
+  // var fullUrl = baseUrl + path
   callback && callback(fullUrl);
 }
 
+function getFullUrl(path) {
+  let key = (path.split(':').length > 1) ? path.split(':')[0] : 'common',
+    url = (path.split(':').length > 1) ? path.split(':')[1] : path;
+  switch (key) {
+    case 'system':
+      return __SYSTEMAPI__ + url;
+    default:
+      return __COMMONAPI__ + url;
+  }
+}
 
 function apiSetting(type, path, contentType, dataType, isXhrFields) {
   isXhrFields = isXhrFields || false;
-  var baseUrl = __COMMONAPI__
-  var fullUrl = baseUrl + path
+  var fullUrl = getFullUrl(path);
+  // var fullUrl = baseUrl + path
   var setting = {
     cache: false,
     url: fullUrl,
@@ -178,9 +188,9 @@ function apiSetting(type, path, contentType, dataType, isXhrFields) {
     setting.crossDomain = true;
     delete setting.xhrFields;
   }
-  if (Helper.get('token') && Helper.get('token') !== 'null') {
+  if (helper.get('token') && helper.get('token') !== 'null') {
     if (!setting['headers']) setting['headers'] = {}
-    setting['headers']['X-Token'] = Helper.get('token')
+    setting['headers']['X-Token'] = helper.get('token')
   }
   return setting;
 }

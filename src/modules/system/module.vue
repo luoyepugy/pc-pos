@@ -11,9 +11,8 @@
         </Select>
         <Input search placeholder="请输入模块编号/名称" />
         <div class="button-group">
-          <Button class="button">导出</Button>
-          <Button type="primary" class="button" @click="addModal">新增</Button>
-          <!-- <Button @click="table.fields.isShow=true" icon="ios-options-outline"></Button> -->
+          <Button class="c-button">导出</Button>
+          <Button type="primary" class="c-button" @click="addModal">新增</Button>
         </div>
       </div>
       <div class="content-tools" v-show="tools.show">
@@ -22,9 +21,9 @@
         <span class="button" @click="modal.del=true"><Icon type="ios-trash-outline" size="22" />删除</span>
       </div>
       <div class="content-table">
-        <span @click="table.fields.isShow=true" class="cp-color-hover icon-filter-column"><Icon type="ios-options-outline" size="24"></Icon></span>
+        <span v-if="table.data.length>0" @click="table.fields.isShow=true" class="cp-color-hover icon-filter-column"><Icon type="ios-options-outline" size="24"></Icon></span>
         <Table class="cp-table-full" ref="table" @on-selection-change="selectionChange" :loading="table.loading" :columns="table.columns" :data="table.data"></Table>
-        <Page @on-change="pageChange" @on-page-size-change="pageSizeChange" :total="json.total" show-sizer show-total show-elevator />
+        <Page @on-change="pageChange" @on-page-size-change="pageSizeChange" :total="page.total" show-sizer show-total show-elevator />
       </div>
     </div>
     <!-- 新增/编辑模态框 -->
@@ -77,8 +76,8 @@
 <script type="text/ecmascript-6">
 import consts from '@/utils/consts';
 import Rest from '@/rest';
-import Helper from '@/helper'
-import json from '@/json/demo2.json';
+import api from '@/api';
+import { helper } from '@/helper';
 
 export default {
   data() {
@@ -117,7 +116,6 @@ export default {
         loading: true,
         columns: [],
         data: [],
-        json: {},
       },
       tools: {
         show: false,
@@ -152,13 +150,15 @@ export default {
       systemList: consts.SYSTEM_NAME,
       form_statusList: consts.SYSTEM_STATUS,
       operationList: consts.MENU_PERMISSION,
-      page: 1,
-      pageSize: 10,
+      page: {
+        total: 0,
+        size: 10,
+        index: 1,
+      },
     }
   },
   created() {
     this.getTableDatas();
-    this.json = json;
   },
   methods: {
     getTableColumns() {
@@ -185,7 +185,7 @@ export default {
           key: 'appNo',
           width: 150,
           render: (h, params) => {
-            return h('span', Helper.fieldMapping(params.row.appNo, consts.SYSTEM_NAME));
+            return h('span', helper.fieldMapping(params.row.appNo, consts.SYSTEM_NAME));
           }
         },
         '名称': {
@@ -208,7 +208,7 @@ export default {
           key: 'type',
           width: 100,
           render: (h, params) => {
-            return h('span', Helper.fieldMapping(params.row.type, consts.MENU_TYPE));
+            return h('span', helper.fieldMapping(params.row.type, consts.MENU_TYPE));
           }
         },
         '操作权限': {
@@ -216,7 +216,7 @@ export default {
           key: 'operations',
           width: 250,
           render: (h, params) => {
-            return h('span', Helper.fieldMapping(params.row.operations, consts.MENU_PERMISSION));
+            return h('span', helper.fieldMapping(params.row.operations, consts.MENU_PERMISSION));
           }
         },
         '状态': {
@@ -224,7 +224,7 @@ export default {
           key: 'status',
           width: 100,
           render: (h, params) => {
-            return h('span', Helper.fieldMapping(params.row.status, consts.SYSTEM_STATUS));
+            return h('span', helper.fieldMapping(params.row.status, consts.SYSTEM_STATUS));
           }
         },
         '创建时间': {
@@ -235,7 +235,7 @@ export default {
         '创建人': {
           title: '创建人',
           key: 'createUser',
-          width: 100
+          width: 150
         },
         '更新时间': {
           title: '更新时间',
@@ -253,54 +253,6 @@ export default {
           width: 50,
           fixed: 'right',
           align: 'center',
-
-          // render: (h, params) => {
-          //   return h('div', [
-          //     h('Button', {
-          //       props: {
-          //         type: 'default',
-          //         size: 'small'
-          //       },
-          //       style: {
-          //         marginRight: '5px'
-          //       },
-          //       on: {
-          //         click: () => {
-          //           this.modal.add = true;
-          //           this.modal.addTitle = '编辑模块';
-          //           this.modal.isEdit = true;
-          //           this.form = params.row;
-          //         }
-          //       }
-          //     }, '编辑'),
-          //     h('Button', {
-          //       props: {
-          //         type: 'default',
-          //         size: 'small'
-          //       },
-          //       style: {
-          //         marginRight: '5px'
-          //       },
-          //       on: {
-          //         click: () => {
-          //           this.$root.go({ name: 'system-module-detail', params: { id: params.row.moduleNo } });
-          //         }
-          //       }
-          //     }, '详情'),
-          //     h('Button', {
-          //       props: {
-          //         type: 'error',
-          //         size: 'small'
-          //       },
-          //       on: {
-          //         click: () => {
-          //           this.modal.del = true;
-          //         }
-          //       }
-          //     }, '删除')
-          //   ]);
-          // }
-
           render: (h, params) => {
             return h('div', [
               h('Dropdown', {
@@ -387,221 +339,13 @@ export default {
         }
       };
       return columns;
-
-
-
-      // return [, {
-      //     title: '模块编号',
-      //     key: 'moduleNo',
-      //     width: 100
-      //   }, {
-      //     title: '系统名称',
-      //     key: 'appNo',
-      //     width: 150,
-      //     render: (h, params) => {
-      //       return h('span', Helper.fieldMapping(params.row.appNo, consts.SYSTEM_NAME));
-      //     }
-      //   },
-      //   {
-      //     title: '名称',
-      //     key: 'name',
-      //     width: 200
-      //   }, {
-      //     title: '编码',
-      //     key: 'code',
-      //     width: 420
-      //   }, {
-      //     title: '地址',
-      //     key: 'url',
-      //     width: 250
-      //   }, {
-      //     title: '菜单类型',
-      //     key: 'type',
-      //     width: 100,
-      //     render: (h, params) => {
-      //       return h('span', Helper.fieldMapping(params.row.type, consts.MENU_TYPE));
-      //     }
-      //   }, {
-      //     title: '操作权限',
-      //     key: 'operations',
-      //     width: 250,
-      //     render: (h, params) => {
-      //       return h('span', Helper.fieldMapping(params.row.operations, consts.MENU_PERMISSION));
-      //     }
-      //   },
-      //   {
-      //     title: '状态',
-      //     key: 'status',
-      //     width: 100,
-      //     render: (h, params) => {
-      //       return h('span', Helper.fieldMapping(params.row.status, consts.SYSTEM_STATUS));
-      //     }
-      //   },
-      //   {
-      //     title: '创建时间',
-      //     key: 'createTime',
-      //     width: 200
-      //   },
-      //   {
-      //     title: '创建人',
-      //     key: 'createUser',
-      //     width: 100
-      //   },
-      //   {
-      //     title: '更新时间',
-      //     key: 'updateTime',
-      //     width: 200
-      //   },
-      //   {
-      //     title: '更新人',
-      //     key: 'updateUser',
-      //     width: 100
-      //   },
-      //   {
-      //     title: '操作',
-      //     key: 'action',
-      //     width: 200,
-      //     fixed: 'right',
-      //     align: 'center',
-
-
-      // render: (h, params) => {
-      //   return h('Poptip', {
-      //     props: {
-      //       trigger: 'hover',
-      //       title: '',
-      //       placement: 'bottom'
-      //     }
-      //   }, [
-      //     h('Icon', {
-      //       props: {
-      //         type: 'ios-more',
-      //         size: '24'
-      //       }
-      //     }),
-      //     h('div', {
-      //       slot: 'content'
-      //     }, [
-      //       h('ul', [
-      //         h('li', [
-      //           h('Icon', {
-      //             props: {
-      //               type: 'ios-create-outline',
-      //               size: '24'
-      //             }
-      //           }),
-      //           '编辑'
-      //         ]),
-      //         h('li', [
-      //           h('Icon', {
-      //             props: {
-      //               type: 'ios-document-outline',
-      //               size: '24'
-      //             }
-      //           }),
-      //           '详情'
-      //         ]),
-      //         h('li', [
-      //           h('Icon', {
-      //             props: {
-      //               type: 'ios-trash-outline',
-      //               size: '24'
-      //             }
-      //           }),
-      //           '删除'
-      //         ])
-      //       ])
-      //     ])
-      //   ]);
-      // }
-
-      // render: (h, params) => {
-      //   return h('div', [
-      //     h('Dropdown', {
-      //       on: {
-      //         'on-click': (name) => {
-      //           switch (name) {
-      //             case 'edit':
-      //               this.modal.add = true;
-      //               this.modal.addTitle = '编辑模块';
-      //               this.modal.isEdit = true;
-      //               this.form = params.row;
-      //               break;
-      //             case 'detail':
-      //               this.$root.go({ name: 'system-module-detail' });
-      //               break;
-      //             case 'delete':
-      //               this.modal.del = true;
-      //               break;
-      //           }
-      //         }
-      //       }
-      //     }, [
-      //       h('div', {
-      //         class: {
-      //           member_operate_div: true
-      //         }
-      //       }, [
-      //         h('Icon', {
-      //           props: {
-      //             type: 'ios-more',
-      //             size: '24'
-      //           }
-      //         })
-      //       ]),
-      //       h('DropdownMenu', {
-      //         slot: 'list'
-      //       }, [
-      //         h('DropdownItem', {
-      //           props: {
-      //             name: 'edit'
-      //           }
-      //         }, [h('Icon', {
-      //             props: {
-      //               type: 'ios-create-outline',
-      //               size: '24'
-      //             }
-      //           }),
-      //           '编辑'
-      //         ]),
-      //         h('DropdownItem', {
-      //           props: {
-      //             name: 'detail'
-      //           }
-      //         }, [h('Icon', {
-      //             props: {
-      //               type: 'ios-document-outline',
-      //               size: '24'
-      //             }
-      //           }),
-      //           '详情'
-      //         ]),
-      //         h('DropdownItem', {
-      //           props: {
-      //             name: 'delete'
-      //           }
-      //         }, [h('Icon', {
-      //             props: {
-      //               type: 'ios-trash-outline',
-      //               size: '24'
-      //             }
-      //           }),
-      //           '删除'
-      //         ]),
-      //       ])
-      //     ])
-      //   ])
-      // }
-
-      //     render: (h, params) => { // return h('div', [ // h('Button', { // props: { // type: 'default', // size: 'small' // }, // style: { // marginRight: '5px' // }, // on: { // click: () => { // this.modal.add = true; // this.modal.addTitle = '编辑模块'; // this.modal.isEdit = true; // this.form = params.row; // } // } // }, '编辑'), // h('Button', { // props: { // type: 'default', // size: 'small' // }, // style: { // marginRight: '5px' // }, // on: { // click: () => { // this.$root.go({ name: 'system-module-detail' }); // } // } // }, '详情'), // h('Button', { // props: { // type: 'error', // size: 'small' // }, // on: { // click: () => { // this.modal.del = true; // } // } // }, '删除') // ]); // } // } // ]
-
     },
     pageChange(page) {
-      this.page = page;
+      this.page.index = page;
       console.log(page);
     },
     pageSizeChange(size) {
-      this.pageSize = size;
+      this.page.size = size;
       console.log(size);
     },
     addModal() {
@@ -634,15 +378,16 @@ export default {
       this.tools.number = arr.length;
     },
     getTableDatas() {
-      // $.getJSON(, res => {
-      // Rest.get('json/demo1.json').done(res => {
-      // if(Helper.isSuccess(res)) {
-      this.table.data = json.rows;
-      this.table.loading = false;
-      // } else {
-      //   this.$Message.error(res.status.msg);
-      // }
-    }
+      Rest.get(api.system.module.list).done(res => {
+        if (helper.isSuccess(res)) {
+          this.table.data = res.rows;
+          this.page.total = res.total;
+          this.table.loading = false;
+        } else {
+          this.$Message.error(res.status.msg);
+        }
+      });
+    },
   },
   mounted() {
     this.getTableColumns();

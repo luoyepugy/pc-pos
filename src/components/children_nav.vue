@@ -59,7 +59,7 @@ export default {
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
+<style lang="scss">
 .cp-children-nav {
   @include color(#22282e, #959FA9);
   z-index: 10;
@@ -69,6 +69,7 @@ export default {
   &.top {
     @include position(absolute, right 0, top 49);
   }
+
   &.left {
     @include position(absolute, left 179, top 0);
   }
@@ -84,6 +85,7 @@ export default {
     position: relative;
     padding: 0 13px;
     display: block;
+
     &:hover {
       @include color(#293038, #fff);
     }
@@ -94,23 +96,28 @@ export default {
     width: 150px;
     vertical-align: top;
     position: relative;
+
     &::before {
       content: '';
       @include list(width 1, height 800);
       @include position(absolute, right 0, top -10);
       background: #959FA9;
     }
+
     &:last-child::before {
       width: 0;
     }
   }
+
   dt {
     padding-left: 13px;
     @include line-height(30);
   }
+
   dd {
     padding-left: 36px;
     @include line-height(30);
+
     &:hover {
       @include color(#22282e, #fff);
     }

@@ -3,14 +3,11 @@
     <Crumb :list="crumbList"></Crumb>
     <div class="content">
       <div class="content-filter">
-        <drop-to-select :list="statusList" @on-change="changeStatus"></drop-to-select>
-        <!-- <Select v-model="status" style="width:200px">
-  <Option v-for="item in statusList" :value="item.Id" :key="item.Id">{{ item.name }}</Option>
-</Select> -->
+        <DropToSelect :list="statusList" @on-change="changeStatus"></DropToSelect>
         <DatePicker confirm v-model="date" @on-ok="selectDate" type="daterange" placement="top-start" placeholder="请选择日期范围" format="yyyy/MM/dd"></DatePicker>
         <div class="button-group">
-          <Button class="button" @click="contract.modal=true">设置</Button>
-          <Button type="primary" class="button" @click="addTableItem">新增</Button>
+          <Button class="c-button" @click="contract.modal=true">设置</Button>
+          <Button type="primary" class="c-button" @click="addTableItem">新增</Button>
         </div>
       </div>
       <div class="content-table">
@@ -21,8 +18,8 @@
     <Modal :width="800" :mask-closable="false" title="待商务准备合同设置" v-model="contract.modal" @on-ok="saveContract">
       <Table ref="contract.table" :loading="contract.table.loading" :columns="contract.table.columns" :data="contract.table.data"></Table>
       <div slot="footer">
-        <Button @click="cancelContract">取消</Button>
-        <Button type="primary" @click="saveContract">确定</Button>
+        <Button class="c-button" @click="cancelContract">取消</Button>
+        <Button class="c-button" type="primary" @click="saveContract">确定</Button>
       </div>
     </Modal>
     <!-- /设置模态框 -->
@@ -31,8 +28,8 @@
 <script type="text/ecmascript-6">
 import consts from '@/utils/consts';
 import Rest from '@/rest';
-import Helper from '@/helper';
-import json from '@/json/demo1.json';
+import api from '@/api';
+import { helper } from '@/helper';
 
 export default {
   data() {
@@ -48,7 +45,6 @@ export default {
       statusList: consts.SYSTEM_STATUS_ALL,
       status: 2,
       statusText: '全部状态',
-      // statusVisible: false,
       table: {
         columns: [{
             title: '系统名称',
@@ -174,28 +170,26 @@ export default {
             }
           ],
           data: [],
-          json: {},
         },
       },
     }
   },
   created() {
     this.getTableDatas();
-    this.json = json;
   },
   methods: {
     changeStatus(id) {
       this.status = id;
     },
     getTableDatas() {
-      // $.getJSON(, res => {
-      // Rest.get('json/demo1.json').done(res => {
-      // if(Helper.isSuccess(res)) {
-      this.contract.table.data = json.rows;
-      this.contract.table.loading = false;
-      // } else {
-      //   this.$Message.error(res.status.msg);
-      // }
+      Rest.get(api.system.app.list).done(res => {
+        if (helper.isSuccess(res)) {
+          this.contract.table.data = res.rows;
+          this.contract.table.loading = false;
+        } else {
+          this.$Message.error(res.status.msg);
+        }
+      });
     },
     saveContract() {
       this.contract.modal = false;
@@ -204,7 +198,7 @@ export default {
       this.contract.modal = false;
     },
     selectDate() {
-      console.log(Helper.formatDate(this.date[0]));
+      console.log(helper.formatDate(this.date[0]));
     },
     addTableItem() {
       this.table.data.push({

@@ -1,5 +1,11 @@
-<template>
-  <div class="cp-left-nav" :class="[isOpen ? '' : 'only-icon']">
+import { mapState } from 'vuex'
+import Rest from '@/rest';
+import api from '@/api';
+import { helper } from '@/helper';
+import ChildrenNav from './child_nav.js';
+
+export default {
+  template: `<div class="cp-left-nav" :class="[isOpen ? '' : 'only-icon']">
     <ul class="nav">
       <li v-for="item in list" @mouseover="show[item.id]=true" @mouseout="show[item.id]=false">
         <Icon :type="item.icon" size="24" />
@@ -7,15 +13,7 @@
         <ChildrenNav :multi="true" :show="show[item.id]" :list="item.children"></ChildrenNav>
       </li>
     </ul>
-  </div>
-</template>
-<script type="text/ecmascript-6">
-import { mapState } from 'vuex'
-import Rest from '@/rest';
-import api from '@/api';
-import { helper } from '@/helper';
-
-export default {
+  </div>`,
   data() {
     return {
       list: [],
@@ -28,6 +26,9 @@ export default {
         statistics: false,
       },
     }
+  },
+  components: {
+    ChildrenNav,
   },
   computed: mapState({
     // 箭头函数可使代码更简练
@@ -47,33 +48,4 @@ export default {
       });
     }
   }
-}
-</script>
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
-.cp-left-nav {
-  @include list(width 180, height 100vh, font-size 14);
-  @include color(#293038, #959FA9);
-  @include position(absolute, left 0);
-  &.only-icon {
-    width: 50px;
-  }
-  .nav {
-    li {
-      @include line-height(45);
-      cursor: pointer;
-      position: relative;
-      padding: 0 13px;
-      i:first-child {
-        margin-right: 8px;
-      }
-      i:last-child {
-        @include position(absolute, right 15, top 12);
-      }
-      &:hover {
-        @include color(#22282e, #fff);
-      }
-    }
-  }
-}
-</style>
+};
